@@ -1,0 +1,42 @@
+<div class="kanban-container">
+    <div class="header">
+        <h1>Flux des Conférences</h1>
+        <button mat-flat-button color="primary" (click)="openDialog()">
+            <mat-icon>add</mat-icon> Nouvelle Conférence
+        </button>
+    </div>
+    <div class="kanban-board">
+        <div class="kanban-column" *ngFor="let status of columns">
+            <div class="column-header">
+                <span class="status-title">{{ status }}</span>
+                <span class="count-badge">{{ boardData[status].length }}</span>
+            </div>
+
+            <div cdkDropList [id]="status" [cdkDropListData]="boardData[status]" [cdkDropListConnectedTo]="columns"
+                class="card-list" (cdkDropListDropped)="drop($event)">
+
+                <mat-card *ngFor="let item of boardData[status]" cdkDrag class="kanban-card" (click)="openDialog(item)">
+                    <mat-card-header>
+                        <mat-card-title>{{ item.title }}</mat-card-title>
+                        <mat-card-subtitle *ngIf="item.assignee">
+                            <mat-icon inline>person</mat-icon> {{ item.assignee }}
+                        </mat-card-subtitle>
+                    </mat-card-header>
+
+                    <mat-card-content>
+                        <div class="card-details">
+                            <mat-chip-set *ngIf="item.level">
+                                <mat-chip class="level-chip" [ngClass]="item.level">{{ levelLabels[item.level]
+                                    }}</mat-chip>
+                            </mat-chip-set>
+                            <div *ngIf="item.date" class="date-display">
+                                <mat-icon inline>event</mat-icon> {{ item.date | date:'shortDate' }}
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - meetup-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    environment:
+      - DATABASE_URL=mysql+pymysql://user:password@db/meetup_flow
+      - FLASK_ENV=development
+    depends_on:
+      - db
+    networks:
+      - meetup-network
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: meetup_flow
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - meetup-network
+
+networks:
+  meetup-network:
+    driver: bridge
+
+volumes:
+  db_data:
